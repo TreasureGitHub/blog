@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffl.blog.dal.dao.ArticleDao">
+
+    <select id="count"
+            resultType="java.lang.Long"
+    >
+        select count(1)
+          from article
+        <include refid="sqlWhereCondition"/>
+    </select>
+
+    <select id="list"
+            resultType="com.ffl.blog.dal.entity.ArticleDO"
+    >
+        select *
+          from article
+        <include refid="sqlWhereCondition"/>
+        <include refid="sqlLimitClause"/>
+    </select>
+
+    <sql id="where">
+        <where>
+
+        </where>
+    </sql>
+
+    <sql id="sqlWhereCondition">
+        <if test="param.boolIsDeleted != null">
+            <if test ="param.boolIsDeleted">
+                and is_deleted != '0'
+            </if>
+            <if test="param.boolIsDeleted">
+                and is_deleted = '0'
+            </if>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+        </if>
+    </sql>
+
+    <sql id="sqlLimitClause">
+        <if test="page != null and page.limit != null">
+            limit #{page.startRow}, #{page.perPage}
+        </if>
+    </sql>
+
+</mapper>

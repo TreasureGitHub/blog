@@ -9,35 +9,36 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>blog-start</artifactId>
-
+    <artifactId>blog-biz</artifactId>
 
     <dependencies>
+
+        <!-- 自身模块-->
         <dependency>
             <groupId>com.ffl</groupId>
-            <artifactId>blog-biz</artifactId>
+            <artifactId>blog-dal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ffl</groupId>
+            <artifactId>blog-pojo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ffl</groupId>
+            <artifactId>blog-common</artifactId>
         </dependency>
 
+        <!--test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
 
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 
 </project>
