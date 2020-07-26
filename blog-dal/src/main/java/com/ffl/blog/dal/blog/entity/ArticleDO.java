@@ -1,6 +1,6 @@
-package com.ffl.blog.dal.entity;
+package com.ffl.blog.dal.blog.entity;
 
-import com.ffl.blog.dal.entity.base.BaseDO;
+import com.ffl.blog.dal.blog.entity.base.BaseDO;
 import lombok.Data;
 
 import javax.persistence.Table;

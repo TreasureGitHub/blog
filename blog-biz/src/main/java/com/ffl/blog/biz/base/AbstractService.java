@@ -6,7 +6,7 @@ import com.ffl.blog.common.i18n.I18nKey;
 import com.ffl.blog.common.utils.Assert;
 import com.ffl.blog.common.utils.ReflectUtils;
 import com.ffl.blog.dal.base.BaseDaoImpl;
-import com.ffl.blog.dal.entity.base.BaseDO;
+import com.ffl.blog.dal.blog.entity.base.BaseDO;
 import com.ffl.blog.pojo.common.Pagination;
 import com.ffl.blog.pojo.enums.DeleteType;
 import com.ffl.blog.pojo.param.base.BaseParam;
@@ -26,9 +26,9 @@ import static com.ffl.blog.common.constants.AppConstant.I18N_PAGE_SERVICE;
  * @author lff
  * @datetime 2020/01/01 18:46
  */
-public abstract class AbstractBaseService<D extends BaseDO,V extends BaseVO,P extends BaseParam> implements IBaseService<V,P> {
+public abstract class AbstractService<D extends BaseDO,V extends BaseVO,P extends BaseParam> implements IBaseService<V,P> {
 
-    private static final I18nArea AREA = I18N_PAGE_SERVICE.of(AbstractBaseService.class.getSimpleName());
+    private static final I18nArea AREA = I18N_PAGE_SERVICE.of(AbstractService.class.getSimpleName());
 
     private static final I18nKey GEN_DO_ERROR = AREA.of("GEN_DO_ERROR","生成 DO对象错误");
 

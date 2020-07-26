@@ -1,7 +1,7 @@
-package com.ffl.blog.dal.dao;
+package com.ffl.blog.dal.blog.dao;
 
 import com.ffl.blog.dal.base.tk.BaseMapper;
-import com.ffl.blog.dal.entity.TagDO;
+import com.ffl.blog.dal.blog.entity.TagDO;
 import com.ffl.blog.pojo.param.TagParam;
 import org.springframework.stereotype.Repository;
 

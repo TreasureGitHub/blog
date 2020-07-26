@@ -11,7 +11,9 @@ import lombok.Getter;
  */
 public enum StatusCode implements BaseEnum {
 
-    SUCCESS(0, "success", "Success");
+    SUCCESS(0, "success", "Success"),
+
+    SERVER_SERVICE_EXCEPTION(2000,"serviceException","[server] failed to execute service");
 
     @Getter
     private Integer code;

@@ -1,4 +1,4 @@
-package com.ffl.blog.dal.entity.base;
+package com.ffl.blog.dal.blog.entity.base;
 
 import lombok.Data;
 

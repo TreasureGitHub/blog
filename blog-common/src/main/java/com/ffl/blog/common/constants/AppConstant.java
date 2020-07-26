@@ -17,6 +17,8 @@ public interface AppConstant {
 
     String P_COMMON = "common";
 
+    String P_CONTROLLER = "controller";
+
     I18nApp I18N_APP = I18nApp.init(APP);
 
     I18nPage I18N_PAGE_SERVICE = I18N_APP.of(P_SERVICE);
@@ -24,4 +26,6 @@ public interface AppConstant {
     I18nPage I18N_PAGE_COMMON = I18N_APP.of(P_COMMON);
 
     I18nPage I18N_PAGE_ENUM = I18N_APP.of(P_ENUM);
+
+    I18nPage I18N_PAGE_CONTROLLER = I18N_APP.of(P_CONTROLLER);
 }

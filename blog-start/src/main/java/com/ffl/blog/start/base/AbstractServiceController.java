@@ -23,7 +23,8 @@ import static com.ffl.blog.pojo.constant.DateConstants.YYYY_MM_DD_HH_MM_SS;
  * @author lff
  * @datetime 2020/01/05 22:13
  */
-public abstract class AbstractBaseController<V extends BaseVO,P extends BaseParam> implements IBaseController<V,P> {
+public abstract class AbstractServiceController<V extends BaseVO, P extends BaseParam> extends AbstractExceptionHandlerController
+        implements IBaseServiceController<V, P> {
 
     protected abstract IBaseService getService();
 
@@ -48,9 +49,9 @@ public abstract class AbstractBaseController<V extends BaseVO,P extends BasePara
     @Override
     public CallResult<PaginationData<V>> list(P param, Pagination page) throws BlogException {
         Long total = getService().count(param);
-        PaginationData<V> paginationData = null;
+        PaginationData<V> paginationData;
 
-        if(total.equals(0)){
+        if (total.equals(0)) {
             paginationData = PaginationData.ofEmpty(page);
         } else {
             List<V> list = getService().list(param, page);
@@ -67,9 +68,9 @@ public abstract class AbstractBaseController<V extends BaseVO,P extends BasePara
     }
 
     @InitBinder
-    public void initBinder(WebDataBinder binder){
-        CustomDateEditor dateEditor = new CustomDateEditor(new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS),true);
-        binder.registerCustomEditor(Date.class,dateEditor);
+    public void initBinder(WebDataBinder binder) {
+        CustomDateEditor dateEditor = new CustomDateEditor(new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS), true);
+        binder.registerCustomEditor(Date.class, dateEditor);
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }

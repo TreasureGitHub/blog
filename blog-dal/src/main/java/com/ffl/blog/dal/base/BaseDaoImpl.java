@@ -1,7 +1,7 @@
 package com.ffl.blog.dal.base;
 
 import com.ffl.blog.dal.base.tk.BaseMapper;
-import com.ffl.blog.dal.entity.base.BaseDO;
+import com.ffl.blog.dal.blog.entity.base.BaseDO;
 import com.ffl.blog.pojo.common.Pagination;
 import com.ffl.blog.pojo.param.base.BaseParam;
 

@@ -4,7 +4,7 @@ import com.ffl.blog.biz.base.IBaseService;
 import com.ffl.blog.biz.service.TagService;
 import com.ffl.blog.pojo.param.TagParam;
 import com.ffl.blog.pojo.vo.TagVO;
-import com.ffl.blog.start.base.AbstractBaseController;
+import com.ffl.blog.start.base.AbstractServiceController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/innerApi/v1/tag")
-public class TagController extends AbstractBaseController<TagVO, TagParam> {
+public class TagController extends AbstractServiceController<TagVO, TagParam> {
 
     @Autowired
     private TagService tagService;

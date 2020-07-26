@@ -2,37 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ffl.blog.dal.dao.UserDao">
+<mapper namespace="com.ffl.blog.dal.blog.dao.ArticleDao">
 
     <select id="count"
             resultType="java.lang.Long"
     >
         select count(1)
-          from user
+        from article
         <include refid="sqlWhereCondition"/>
     </select>
 
     <select id="list"
-            resultType="com.ffl.blog.dal.entity.UserDO"
+            resultType="com.ffl.blog.dal.blog.entity.ArticleDO"
     >
         select *
-          from user
+        from article
         <include refid="sqlWhereCondition"/>
         <include refid="sqlLimitClause"/>
     </select>
 
+    <sql id="where">
+        <where>
+
+        </where>
+    </sql>
+
     <sql id="sqlWhereCondition">
-        <if test="param.boolIsDeleted != null">
-            <if test ="param.boolIsDeleted">
-                and is_deleted != '0'
+        <where>
+            <if test="param.boolIsDeleted != null">
+                <if test="param.boolIsDeleted">
+                    and is_deleted != '0'
+                </if>
+                <if test="!param.boolIsDeleted">
+                    and is_deleted = '0'
+                </if>
+                <if test="param.id != null">
+                    and id = #{param.id}
+                </if>
             </if>
-            <if test="param.boolIsDeleted">
-                and is_deleted = '0'
-            </if>
-            <if test="param.id != null">
-                and id = #{param.id}
-            </if>
-        </if>
+        </where>
     </sql>
 
     <sql id="sqlLimitClause">

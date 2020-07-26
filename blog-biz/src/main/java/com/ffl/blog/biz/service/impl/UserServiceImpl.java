@@ -1,10 +1,10 @@
 package com.ffl.blog.biz.service.impl;
 
-import com.ffl.blog.biz.base.AbstractBaseService;
+import com.ffl.blog.biz.base.AbstractService;
 import com.ffl.blog.biz.service.UserService;
 import com.ffl.blog.dal.base.BaseDaoImpl;
-import com.ffl.blog.dal.dao.UserDao;
-import com.ffl.blog.dal.entity.UserDO;
+import com.ffl.blog.dal.blog.dao.UserDao;
+import com.ffl.blog.dal.blog.entity.UserDO;
 import com.ffl.blog.pojo.enums.RoleEnum;
 import com.ffl.blog.pojo.param.UserParam;
 import com.ffl.blog.pojo.vo.UserVO;
@@ -18,7 +18,7 @@ import java.util.Date;
  * @datetime 2020/01/01 18:47
  */
 @Service
-public class UserServiceImpl extends AbstractBaseService<UserDO, UserVO, UserParam> implements UserService {
+public class UserServiceImpl extends AbstractService<UserDO, UserVO, UserParam> implements UserService {
 
     @Autowired
     private UserDao userDao;

@@ -1,4 +1,4 @@
-package com.ffl.blog.dal.config;
+package com.ffl.blog.dal.test.config;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -8,12 +8,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
 /**
- *
  * 具体见文档 http://mybatis.org/spring/zh/factorybean.html
  *
  * @author lff
@@ -21,32 +22,35 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableTransactionManagement
-public class DataSourceConfig {
+public class TestDSConfig {
 
-    private static final String DATA_SOURCE = "datasource";
+    private static final String DATA_SOURCE_TEST = "datasource-test";
 
-    private static final String SQL_SESSION_FACTORY = "sqlSessionFactory";
+    private static final String SQL_SESSION_FACTORY_TEST = "sqlSessionFactory-test";
 
-    private static final String CONFIG_PATH = "/mybatis/mybatis-config.xml";
-    private static final String MAPPER_PATH = "/mybatis/mapper/*.xml";
-    private static final String BASE_DAO_PACKAGE = "com.ffl.blog.dal.dao";
+    private static final String TX_MANAGER_TEXT = "transactionManager-test";
+
+    private static final String CONFIG_PATH_TEST = "/mybatis/mybatis-config-test.xml";
+    private static final String MAPPER_PATH_TEST = "/mybatis/test/*.xml";
+    private static final String BASE_DAO_PACKAGE_TEST = "com.ffl.blog.dal.test.dao";
+    private static final String MAPPER_SCAN_CONFIG_TEST = "mmapperScannerConfigurer-test";
 
     /**
      * 用户名
      */
-    private static final String USER_NAME = "blog";
+    private static final String USER_NAME_TEST = "root";
 
     /**
      * 密码
      */
-    private static final String PASSWORD = "blog";
+    private static final String PASSWORD_TEST = "root";
 
     /**
      * 数据库
      */
-    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DRIVER_TEST = "com.mysql.cj.jdbc.Driver";
 
-    private static final String URL = "jdbc:mysql://localhost:3306/blog";
+    private static final String URL_TEST = "jdbc:mysql://localhost:3306/test";
 
     /**
      * 创建数据源
@@ -55,25 +59,25 @@ public class DataSourceConfig {
      * @return
      */
     // @Bean(name = DATA_SOURCE,initMethod = "init",destroyMethod = "destroy")
-    @Bean(name = DATA_SOURCE)
+    @Bean(name = DATA_SOURCE_TEST)
     public DataSource getDataSource() {
         PooledDataSource pooledDataSource = new PooledDataSource();
-        pooledDataSource.setDriver(DRIVER);
-        pooledDataSource.setUrl(URL);
-        pooledDataSource.setUsername(USER_NAME);
-        pooledDataSource.setPassword(PASSWORD);
+        pooledDataSource.setDriver(DRIVER_TEST);
+        pooledDataSource.setUrl(URL_TEST);
+        pooledDataSource.setUsername(USER_NAME_TEST);
+        pooledDataSource.setPassword(PASSWORD_TEST);
         return pooledDataSource;
     }
 
-    @Bean(name = SQL_SESSION_FACTORY)
-    public SqlSessionFactory getSqlSessionFactory(@Qualifier(DATA_SOURCE) DataSource dataSource) throws Exception {
+    @Bean(name = SQL_SESSION_FACTORY_TEST)
+    public SqlSessionFactory getSqlSessionFactory(@Qualifier(DATA_SOURCE_TEST) DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
         //巨坑：一个是 getResources 一个是 getResource
-        sqlSessionFactoryBean.setMapperLocations(resolver.getResources(MAPPER_PATH));
-        sqlSessionFactoryBean.setConfigLocation(resolver.getResource(CONFIG_PATH));
+        sqlSessionFactoryBean.setMapperLocations(resolver.getResources(MAPPER_PATH_TEST));
+        sqlSessionFactoryBean.setConfigLocation(resolver.getResource(CONFIG_PATH_TEST));
         sqlSessionFactoryBean.setDataSource(dataSource);
 
         SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -87,10 +91,10 @@ public class DataSourceConfig {
      * @param dataSource
      * @return
      */
-    //@Bean
-    //public TransactionManager transactionManager(@Qualifier(DATA_SOURCE) DataSource dataSource) {
-    //    return new DataSourceTransactionManager(dataSource);
-    //}
+    @Bean(name = TX_MANAGER_TEXT)
+    public TransactionManager transactionManager(@Qualifier(DATA_SOURCE_TEST) DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 
     //@Bean
     //public SqlSessionTemplate sqlSessionTemplate(@Qualifier(SQL_SESSION_FACTORY) SqlSessionFactory sqlSessionFactory){
@@ -98,16 +102,15 @@ public class DataSourceConfig {
     //}
 
     /**
-     *
      * 注入映射器
      *
      * @return
      */
-    @Bean
+    @Bean(name = MAPPER_SCAN_CONFIG_TEST)
     public MapperScannerConfigurer getMapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
-        mapperScannerConfigurer.setSqlSessionFactoryBeanName(SQL_SESSION_FACTORY);
-        mapperScannerConfigurer.setBasePackage(BASE_DAO_PACKAGE);
+        mapperScannerConfigurer.setSqlSessionFactoryBeanName(SQL_SESSION_FACTORY_TEST);
+        mapperScannerConfigurer.setBasePackage(BASE_DAO_PACKAGE_TEST);
         return mapperScannerConfigurer;
     }
 }

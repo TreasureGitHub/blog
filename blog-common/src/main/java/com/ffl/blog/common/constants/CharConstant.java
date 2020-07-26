@@ -14,4 +14,8 @@ public interface CharConstant {
 
     String MINUS = "-";
 
+    String EMPTY = "";
+
+    String QUESTION = "?";
+
 }

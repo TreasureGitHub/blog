@@ -4,7 +4,7 @@ import com.ffl.blog.biz.base.IBaseService;
 import com.ffl.blog.biz.service.UserService;
 import com.ffl.blog.pojo.param.UserParam;
 import com.ffl.blog.pojo.vo.UserVO;
-import com.ffl.blog.start.base.AbstractBaseController;
+import com.ffl.blog.start.base.AbstractServiceController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/innerApi/v1/user")
-public class UserController extends AbstractBaseController<UserVO,UserParam> {
+public class UserController extends AbstractServiceController<UserVO,UserParam> {
 
     @Autowired
     private UserService userService;
