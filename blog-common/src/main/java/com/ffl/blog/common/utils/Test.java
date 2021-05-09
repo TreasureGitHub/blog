@@ -8,10 +8,13 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        Result result = HttpClientUtils.doGet("https://www.hao123.com/");
+        Object obj = null;
+        System.out.println(obj);
+        initObj(obj);
+        System.out.println(obj);
+    }
 
-        System.out.println(result.getCode());
-        System.out.println(result.getMessage());
-
+    public static void initObj(Object obj) {
+        obj = new Object();
     }
 }

@@ -19,24 +19,29 @@ public class Result {
      */
     private String message;
 
-
-    public Result() {
-        super();
-    }
-
-    public Result(int code) {
-        super();
-        this.code = code;
-    }
-
-    public Result(int code, String message) {
-        super();
+    private Result(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
+    private Result(int code) {
+        this.code = code;
+    }
+
+    public static Result of(int code, String message) {
+        return new Result(code, message);
+    }
+
+    public static Result error(int code) {
+        return new Result(code, null);
+    }
+
+    public static Result success() {
+        return new Result(200, "success");
+    }
+
     @Override
     public String toString() {
-        return "Result [code=" + code + ", content=" + message + "]";
+        return "Result [code=" + code + ", message=" + message + "]";
     }
 }

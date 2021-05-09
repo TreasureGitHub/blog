@@ -23,6 +23,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -82,9 +83,14 @@ public class HttpClientUtils {
     }
 
     static {
-        requestConfig = RequestConfig.custom().setSocketTimeout(DEFAULT_READ_TIMEOUT).setConnectTimeout(DEFAULT_CONNECT_TIMEOUT).setConnectionRequestTimeout(DEFAULT_CONNECT_REQUEST_TIMEOUT).build();
+        requestConfig = RequestConfig
+                .custom()
+                .setSocketTimeout(DEFAULT_READ_TIMEOUT)
+                .setConnectTimeout(DEFAULT_CONNECT_TIMEOUT)
+                .setConnectionRequestTimeout(DEFAULT_CONNECT_REQUEST_TIMEOUT).build();
         @SuppressWarnings("deprecation")
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+                .<ConnectionSocketFactory>create()
                 .register("http", new PlainConnectionSocketFactory())
                 .register("https", new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER))
                 .build();
@@ -144,7 +150,7 @@ public class HttpClientUtils {
      * @return
      * @throws Exception
      */
-    public static Result doGet(String url, Map<String, String> headers, Map<String, String> params, boolean https) throws Exception {
+    public static Result doGet(String url, Map<String, String> headers, Map<String, String> params, boolean https) throws URISyntaxException, IOException {
         // 创建访问的地址
         URIBuilder uriBuilder = new URIBuilder(url);
         if (params != null) {
@@ -158,18 +164,7 @@ public class HttpClientUtils {
         httpGet.setConfig(requestConfig);
         // 设置请求头
         setHeader(headers, httpGet);
-        // 创建httpResponse对象
-        CloseableHttpResponse httpResponse = null;
-        try {
-            if (https) {
-                return getHttpClientResult(httpResponse, httpsClient, httpGet);
-            } else {
-                return getHttpClientResult(httpResponse, httpClient, httpGet);
-            }
-        } finally {
-            httpGet.releaseConnection();
-            release(httpResponse);
-        }
+        return executeRequest(httpGet, https);
     }
 
     /**
@@ -224,18 +219,7 @@ public class HttpClientUtils {
         setHeader(headers, httpPost);
         // 封装请求参数
         setParam(params, httpPost);
-        // 创建httpResponse对象
-        CloseableHttpResponse httpResponse = null;
-        try {
-            if (https) {
-                return getHttpClientResult(httpResponse, httpsClient, httpPost);
-            } else {
-                return getHttpClientResult(httpResponse, httpClient, httpPost);
-            }
-        } finally {
-            httpPost.releaseConnection();
-            release(httpResponse);
-        }
+        return executeRequest(httpPost, https);
     }
 
     /**
@@ -257,18 +241,7 @@ public class HttpClientUtils {
         StringEntity stringEntity = new StringEntity(json, ENCODING);
         stringEntity.setContentEncoding(ENCODING);
         httpPost.setEntity(stringEntity);
-        // 创建httpResponse对象
-        CloseableHttpResponse httpResponse = null;
-        try {
-            if (https) {
-                return getHttpClientResult(httpResponse, httpsClient, httpPost);
-            } else {
-                return getHttpClientResult(httpResponse, httpClient, httpPost);
-            }
-        } finally {
-            httpPost.releaseConnection();
-            release(httpResponse);
-        }
+        return executeRequest(httpPost, https);
     }
 
 
@@ -298,13 +271,7 @@ public class HttpClientUtils {
         // RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
         httpPut.setConfig(requestConfig);
         setParam(params, httpPut);
-        CloseableHttpResponse httpResponse = null;
-        try {
-            return getHttpClientResult(httpResponse, httpClient, httpPut);
-        } finally {
-            httpPut.releaseConnection();
-            release(httpResponse);
-        }
+        return executeRequest(httpPut, false);
     }
 
     /**
@@ -319,13 +286,7 @@ public class HttpClientUtils {
         HttpDelete httpDelete = new HttpDelete(url);
         // RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
         httpDelete.setConfig(requestConfig);
-        CloseableHttpResponse httpResponse = null;
-        try {
-            return getHttpClientResult(httpResponse, httpClient, httpDelete);
-        } finally {
-            httpDelete.releaseConnection();
-            release(httpResponse);
-        }
+        return executeRequest(httpDelete, false);
     }
 
     /**
@@ -369,8 +330,7 @@ public class HttpClientUtils {
      * @param httpMethod
      * @throws UnsupportedEncodingException
      */
-    private static void setParam(Map<String, String> params, HttpEntityEnclosingRequestBase httpMethod)
-            throws UnsupportedEncodingException {
+    private static void setParam(Map<String, String> params, HttpEntityEnclosingRequestBase httpMethod) throws UnsupportedEncodingException {
         // 封装请求参数
         if (params != null && !params.isEmpty()) {
             List<NameValuePair> nvps = new ArrayList<>();
@@ -383,42 +343,25 @@ public class HttpClientUtils {
         }
     }
 
-
-    /**
-     * 获得响应结果
-     *
-     * @param httpResponse
-     * @param httpClient
-     * @param httpMethod
-     * @return
-     * @throws Exception
-     */
-    private static Result getHttpClientResult(CloseableHttpResponse httpResponse, CloseableHttpClient httpClient, HttpRequestBase httpMethod)
-            throws Exception {
-        // 执行请求
-        httpResponse = httpClient.execute(httpMethod);
-        // 获取返回结果
-        if (httpResponse != null && httpResponse.getStatusLine() != null) {
-            String content = "";
-            if (httpResponse.getEntity() != null) {
-                content = EntityUtils.toString(httpResponse.getEntity(), ENCODING);
+    private static Result executeRequest(HttpRequestBase request, boolean https) throws IOException {
+        CloseableHttpResponse httpResponse = null;
+        try {
+            httpResponse = https ? httpsClient.execute(request) : httpClient.execute(request);
+            if (httpResponse != null && httpResponse.getStatusLine() != null) {
+                String message = null;
+                if (httpResponse.getEntity() != null) {
+                    message = EntityUtils.toString(httpResponse.getEntity(), ENCODING);
+                }
+                return Result.of(httpResponse.getStatusLine().getStatusCode(), message);
+            } else {
+                return Result.error(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             }
-            return new Result(httpResponse.getStatusLine().getStatusCode(), content);
-        }
-        return new Result(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-    }
-
-    /**
-     * 释放资源
-     *
-     * @param   httpResponse
-     * @throws IOException
-     */
-    private static void release(CloseableHttpResponse httpResponse)
-            throws IOException {
-        // 释放资源
-        if (httpResponse != null) {
-            httpResponse.close();
+        } finally {
+            // 释放资源
+            request.releaseConnection();
+            if (httpResponse != null) {
+                httpResponse.close();
+            }
         }
     }
 }
