@@ -34,7 +34,7 @@ public abstract class AbstractService<D extends BaseDO,V extends BaseVO,P extend
 
     private static final I18nKey GEN_VO_ERROR = AREA.of("GEN_VO_ERROR","生成 VO对象错误");
 
-    public abstract BaseDaoImpl getDao();
+    public abstract BaseDaoImpl<D,P> getDao();
 
     @Override
     public Long insert(V vo) throws BlogException {
@@ -86,6 +86,13 @@ public abstract class AbstractService<D extends BaseDO,V extends BaseVO,P extend
         }
     }
 
+    /**
+     *
+     * 删除，此处应该 先判断是否 在数据库中存在
+     *
+     * @param id
+     * @throws BlogException
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED,rollbackFor = Exception.class)
     @Override
     public void delete(Long id) throws BlogException {

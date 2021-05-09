@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author lff
  * @datetime 2020/01/05 21:53
+ *
+ * 内部api  innerApi/v1/模块
+ * 外部api  api/v1/模块
  */
 @ResponseBody
 public interface IBaseServiceController<V extends BaseVO,P extends BaseParam> {
